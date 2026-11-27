@@ -8,7 +8,7 @@
 <meta name="keywords" content="advent calendar creator, digital advent calendar, photo advent calendar, online advent calendar maker, Christmas countdown">
 <meta name="author" content="Advent Calendar Creator">
 <meta name="robots" content="index, follow">
-<meta name="theme-color" content="#0f2a1d">
+<meta name="theme-color" content="#FFD23F">
 <link rel="canonical" href="https://adventcalendarcreator.com/">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="/favicon.png">
@@ -35,17 +35,178 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"Advent Calendar Creator","url":"https://adventcalendarcreator.com/","description":"Upload your photos and create a shareable digital Christmas advent calendar.","applicationCategory":"MultimediaApplication","operatingSystem":"Any","image":"https://adventcalendarcreator.com/og-image.png"}
 </script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
-body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0f2a1d;color:#f3e9d2;font-family:Georgia,serif;text-align:center;padding:2rem}
-h1{font-size:clamp(2.2rem,6vw,4rem);margin:0 0 .5rem}h1 span{color:#d4a53a}
-p{font-family:system-ui,sans-serif;font-size:1.2rem;color:#e8e0cc}
+:root{--ink:#17152B;--muted:#4A4766;--red:#FF4B3E;--yellow:#FFD23F;--mint:#6EE0B0;--pink:#FF9CC8;--blue:#5BB8FF;--cream:#FFF6E5;--bd:2.5px solid var(--ink);--sh:4px 4px 0 var(--ink)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{margin:0;font-family:'Bricolage Grotesque',system-ui,sans-serif;color:var(--ink);background:radial-gradient(rgba(255,75,62,.28) 1.4px,transparent 1.8px) 0 0/12px 12px,var(--cream);line-height:1.45;overflow-x:hidden}
+a{color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border:var(--bd);border-radius:14px;background:var(--red);color:var(--ink);font:800 18px/1 inherit;font-family:inherit;text-decoration:none;box-shadow:var(--sh);transition:transform .08s,box-shadow .08s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.alt{background:#fff}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;text-transform:uppercase;letter-spacing:-.5px;font-size:17px;text-decoration:none;line-height:1}
+.logo i{display:grid;place-items:center;width:38px;height:38px;border:var(--bd);border-radius:10px;background:var(--yellow);box-shadow:3px 3px 0 var(--ink);font-style:normal;font-size:20px;rotate:-6deg}
+nav .btn{min-height:44px;padding:0 16px;font-size:15px;background:var(--yellow)}
+.tape{background:var(--ink);color:var(--yellow);font-weight:800;font-size:13px;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap;overflow:hidden;border-block:var(--bd)}
+.tape div{display:inline-block;padding:9px 0;animation:mq 28s linear infinite}
+.tape span{margin:0 18px}
+@keyframes mq{to{transform:translateX(-50%)}}
+.hero{display:grid;gap:34px;padding:34px 0 56px}
+.chip{display:inline-block;border:var(--bd);border-radius:999px;background:var(--mint);padding:6px 14px;font-weight:800;font-size:14px;box-shadow:3px 3px 0 var(--ink);rotate:-2deg}
+h1{font-size:clamp(40px,11.5vw,84px);line-height:.94;letter-spacing:-.045em;text-transform:uppercase;font-weight:800;margin:18px 0 16px}
+h1 em{font-style:normal;background:var(--yellow);padding:0 .12em;border:var(--bd);border-radius:12px;box-shadow:var(--sh);display:inline-block;rotate:-1.5deg}
+.lede{font-size:clamp(18px,4.6vw,22px);font-weight:500;color:var(--muted);max-width:30em;margin:0 0 24px}
+.cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.fine{font-size:14px;font-weight:700;color:var(--muted);margin-top:14px}
+.board{background:#fff;border:var(--bd);border-radius:22px;box-shadow:7px 7px 0 var(--ink);padding:16px;rotate:1.2deg;margin:0 8px 8px 0}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.door{aspect-ratio:1/1.1;border:var(--bd);border-radius:12px;box-shadow:3px 3px 0 var(--ink);display:grid;place-items:center;font-weight:800;font-size:clamp(20px,6vw,30px);color:var(--ink);position:relative;overflow:hidden}
+.door:nth-child(4n+1){rotate:-2deg;background:var(--red)}.door:nth-child(4n+2){rotate:1.5deg;background:var(--yellow)}.door:nth-child(4n+3){rotate:-1deg;background:var(--mint)}.door:nth-child(4n+4){rotate:2deg;background:var(--pink)}
+.door.open{background:var(--blue)!important;font-size:clamp(22px,6.5vw,32px)}
+.door.ph{background-size:cover!important;background-position:center;color:#fff;align-items:end;justify-items:start;padding:4px 7px;font-size:15px;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.door.today{outline:3px solid #fff;box-shadow:0 0 0 5.5px var(--ink),3px 3px 0 5.5px var(--ink)}
+.bar{display:flex;justify-content:space-between;margin-top:14px;font-weight:800;font-size:14px;text-transform:uppercase}
+section.wrap{padding-top:54px;padding-bottom:54px}
+h2{font-size:clamp(30px,8vw,52px);line-height:1;letter-spacing:-.035em;text-transform:uppercase;font-weight:800;margin:0 0 28px}
+h2 span{background:var(--pink);border:var(--bd);border-radius:10px;padding:0 .14em;box-shadow:3px 3px 0 var(--ink);display:inline-block;rotate:1.5deg}
+.steps{display:grid;gap:18px}
+.card{background:#fff;border:var(--bd);border-radius:20px;box-shadow:var(--sh);padding:22px;position:relative}
+.card h3{margin:10px 0 6px;font-size:22px;letter-spacing:-.02em;text-transform:uppercase;line-height:1.05}
+.card p{margin:0;color:var(--muted);font-weight:500}
+.num{display:grid;place-items:center;width:46px;height:46px;border:var(--bd);border-radius:12px;font-weight:800;font-size:24px;box-shadow:3px 3px 0 var(--ink)}
+.steps .card:nth-child(1) .num{background:var(--red)}.steps .card:nth-child(2) .num{background:var(--yellow)}.steps .card:nth-child(3) .num{background:var(--mint)}
+.band{background:var(--yellow);border-block:var(--bd)}
+.feats{display:grid;gap:18px}
+.feats .card:nth-child(4n+1){rotate:-.8deg}.feats .card:nth-child(4n+2){rotate:.7deg}.feats .card:nth-child(4n+3){rotate:.6deg}.feats .card:nth-child(4n+4){rotate:-.7deg}
+.ico{font-size:34px;line-height:1}
+.looks{display:grid;gap:18px}
+.look{border:var(--bd);border-radius:20px;box-shadow:var(--sh);padding:18px;display:flex;flex-direction:column;gap:12px}
+.look h3{margin:0;font-size:22px;text-transform:uppercase;letter-spacing:-.02em}
+.look p{margin:0;font-weight:600}
+.sw{display:flex;gap:6px}.sw b{width:30px;height:30px;border:var(--bd);border-radius:50%}
+.soon{display:flex;flex-direction:column;gap:14px;background:var(--ink);color:var(--cream);border:var(--bd);border-radius:24px;box-shadow:7px 7px 0 var(--red);padding:28px}
+.soon h2{margin:0}.soon h2 span{color:var(--ink)}
+.soon p{margin:0;font-size:18px;font-weight:500;max-width:34em}
+.pill{align-self:flex-start;background:var(--mint);color:var(--ink);border:var(--bd);border-radius:999px;padding:5px 14px;font-weight:800;font-size:13px;text-transform:uppercase}
+details{background:#fff;border:var(--bd);border-radius:16px;box-shadow:3px 3px 0 var(--ink);margin-bottom:12px;padding:0 18px}
+summary{cursor:pointer;font-weight:800;font-size:18px;padding:16px 0;list-style:none;display:flex;justify-content:space-between;gap:12px;min-height:44px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:26px;line-height:1}
+details[open] summary::after{content:"–"}
+details p{margin:0 0 16px;color:var(--muted);font-weight:500}
+.final{text-align:center;padding:60px 0 70px}
+.final h2{margin-bottom:22px}
+footer{border-top:var(--bd);background:#fff;padding:22px 0 30px;font-weight:700;font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between}
+.snow{position:fixed;inset:0;pointer-events:none;z-index:5}
+@media(min-width:760px){
+  .hero{grid-template-columns:1.1fr .9fr;align-items:center;gap:48px;padding:56px 0 80px}
+  .steps,.feats{grid-template-columns:repeat(3,1fr)}.feats{grid-template-columns:repeat(2,1fr)}
+  .looks{grid-template-columns:repeat(3,1fr)}
+  .soon{flex-direction:row;align-items:center;justify-content:space-between;padding:40px}
+}
+@media(prefers-reduced-motion:reduce){.tape div{animation:none}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
+<canvas class="snow" id="snow" aria-hidden="true"></canvas>
+<div class="wrap">
+  <nav aria-label="Main">
+    <a class="logo" href="/"><i>🎄</i><span>Advent Calendar<br>Creator</span></a>
+    <a class="btn" href="/app/?theme=pop">Start free</a>
+  </nav>
+</div>
+<div class="tape" aria-hidden="true"><div><span>24 doors</span>★<span>your photos</span>★<span>snow &amp; stickers</span>★<span>one surprise a day</span>★<span>free to make</span>★<span>24 doors</span>★<span>your photos</span>★<span>snow &amp; stickers</span>★<span>one surprise a day</span>★<span>free to make</span>★</div></div>
+
 <main>
-<h1>Advent Calendar <span>Creator</span></h1>
-<p>Upload your photos. Get a digital advent calendar to share.</p>
-<p>Coming soon.</p>
+<div class="wrap hero">
+  <div>
+    <span class="chip">🎁 Christmas 2026</span>
+    <h1>Your photos.<br><em>24 doors.</em><br>One a day.</h1>
+    <p class="lede">Drop in your favourite photos and we'll dress them up in snow, stickers and Christmas filters. Then open one door every day until Christmas.</p>
+    <div class="cta"><a class="btn" href="/app/?theme=pop">Make my calendar →</a><a class="btn alt" href="#how">How it works</a></div>
+    <p class="fine">Free · No sign-up · Works on your phone</p>
+  </div>
+  <div class="board" role="img" aria-label="A preview advent calendar with some doors open showing photos">
+    <div class="grid">
+      <div class="door ph" style="background-image:url(/img/tree.jpg)">1</div><div class="door ph" style="background-image:url(/img/cabin.jpg)">2</div><div class="door open">3</div><div class="door ph" style="background-image:url(/img/beach.jpg)">4</div>
+      <div class="door">5</div><div class="door ph" style="background-image:url(/img/cabin.jpg)">6</div><div class="door today">7</div><div class="door">8</div>
+      <div class="door">9</div><div class="door">10</div><div class="door">11</div><div class="door">12</div>
+      <div class="door">13</div><div class="door">14</div><div class="door">15</div><div class="door">16</div>
+    </div>
+    <div class="bar"><span>🎄 Our Advent Calendar</span><span>Day 7 is open!</span></div>
+  </div>
+</div>
+
+<div class="band"><section class="wrap" id="how">
+  <h2>How it <span>works</span></h2>
+  <div class="steps">
+    <div class="card"><div class="num">1</div><h3>Add your photos</h3><p>Pick up to 24 from your camera roll, or snap new ones. They stay on your device.</p></div>
+    <div class="card"><div class="num">2</div><h3>We decorate them</h3><p>Auto-decorate picks a Christmas filter, frame and stickers to suit each photo. Tweak anything you like.</p></div>
+    <div class="card"><div class="num">3</div><h3>Open a door a day</h3><p>Door 1 opens on 1 December, door 24 on Christmas Eve. Doors stay locked until their day.</p></div>
+  </div>
+</section></div>
+
+<section class="wrap">
+  <h2>Made to <span>delight</span></h2>
+  <div class="feats">
+    <div class="card"><div class="ico">✨</div><h3>Auto-decorate</h3><p>Dark and moody? Warm glow and fairy lights. Snowy and bright? Frosty with a snow drift. Faces get a Santa hat.</p></div>
+    <div class="card"><div class="ico">❄️</div><h3>Real falling snow</h3><p>Snow is baked into each picture and drifts down live when a door opens.</p></div>
+    <div class="card"><div class="ico">🎅</div><h3>Stickers you control</h3><p>Drag, pinch to resize and rotate. Add a message to make each day personal.</p></div>
+    <div class="card"><div class="ico">🔒</div><h3>Private by design</h3><p>Photos are stored on your device. Nothing is uploaded to a server.</p></div>
+  </div>
+</section>
+
+<div class="band"><section class="wrap">
+  <h2>Pick your <span>look</span></h2>
+  <div class="looks">
+    <div class="look" style="background:#0A0E1F;color:#F3EEE1"><h3>Midnight</h3><p>Starlit gold on deep navy. Quiet and elegant.</p><div class="sw"><b style="background:#0A0E1F;border-color:#F3EEE1"></b><b style="background:#121A36"></b><b style="background:#D9B66B"></b><b style="background:#F3EEE1"></b></div></div>
+    <div class="look" style="background:#F4E9D8"><h3>Hearth</h3><p>Cosy wool and felt. Warm and homely.</p><div class="sw"><b style="background:#F4E9D8"></b><b style="background:#A93442"></b><b style="background:#2F5F50"></b><b style="background:#E3A63B"></b></div></div>
+    <div class="look" style="background:var(--pink)"><h3>Pop Print</h3><p>Bold, bright and playful. Like this page.</p><div class="sw"><b style="background:#FFF6E5"></b><b style="background:#FF4B3E"></b><b style="background:#FFD23F"></b><b style="background:#5BB8FF"></b></div></div>
+  </div>
+</section></div>
+
+<section class="wrap">
+  <div class="soon">
+    <div><span class="pill">Coming soon</span><h2 style="margin-top:14px">Print it. <span>Post it.</span></h2><p>A printed poster calendar with your 24 photos, mailed to someone you love. Want a heads up when it's ready? Watch this space.</p></div>
+    <a class="btn" style="background:var(--yellow);flex:none" href="/app/?theme=pop">Start with digital</a>
+  </div>
+</section>
+
+<section class="wrap" id="faq">
+  <h2>Quick <span>answers</span></h2>
+  <details><summary>Is it really free?</summary><p>Yes. Making and opening your digital calendar is free, with no account needed.</p></details>
+  <details><summary>Where are my photos stored?</summary><p>On your own device, inside your browser. They aren't uploaded anywhere, so use the same phone or browser each day. Clearing site data will remove them.</p></details>
+  <details><summary>Can I start before December?</summary><p>Yes. Build it any time. Doors unlock on their date in December, and a preview-date setting lets you test it early.</p></details>
+  <details><summary>Can I send it to someone?</summary><p>Not yet. Calendars currently live on the device that made them. Sharing by link is on the list.</p></details>
+  <details><summary>Does it work on a phone?</summary><p>It's built phone-first. Add photos from your camera roll or take new ones, then pinch and drag to decorate.</p></details>
+</section>
+
+<section class="wrap final">
+  <h2>Ready to <span>open</span> a door?</h2>
+  <a class="btn" href="/app/?theme=pop">Make my calendar →</a>
+</section>
 </main>
+
+<footer><div class="wrap"><span>🎄 Advent Calendar Creator</span><span>Product 1 of #30products30days</span><a href="https://30products30days.com">30products30days.com</a></div></footer>
+
+<script>
+(()=>{
+  const cv=document.getElementById('snow'),x=cv.getContext('2d');
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  let W,H,f=[];
+  const size=()=>{const d=Math.min(2,devicePixelRatio||1);W=cv.width=innerWidth*d;H=cv.height=innerHeight*d;f=Array.from({length:Math.round(innerWidth/14)},()=>({x:Math.random()*W,y:Math.random()*H,r:(1.2+Math.random()*2.6)*d,v:.4+Math.random()*1,p:Math.random()*6}));};
+  size();addEventListener('resize',size);
+  (function t(){x.clearRect(0,0,W,H);x.fillStyle='rgba(255,75,62,.55)';
+    for(const s of f){s.y+=s.v;s.p+=.012;s.x+=Math.sin(s.p)*.5;if(s.y>H+5){s.y=-5;s.x=Math.random()*W;}x.beginPath();x.arc(s.x,s.y,s.r,0,7);x.fill();}
+    requestAnimationFrame(t);})();
+})();
+</script>
 </body>
 </html>
