@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "adventcalendarcreator",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./public"
+  },
+  "routes": [
+    { "pattern": "adventcalendarcreator.com", "custom_domain": true },
+    { "pattern": "www.adventcalendarcreator.com", "custom_domain": true }
+  ]
+}
