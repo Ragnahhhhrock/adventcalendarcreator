@@ -3,6 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Google tag (gtag.js) - served first-party via Cloudflare Google tag gateway when enabled -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K7Q02773H2"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','G-K7Q02773H2');
+function track(n,p){try{gtag('event',n,p||{});}catch(e){}}
+</script>
 <title>Advent Calendar Creator – Make a Digital Advent Calendar from Your Photos</title>
 <meta name="description" content="Upload your photos and create a shareable digital Christmas advent calendar in minutes. 24 doors, one surprise a day.">
 <meta name="keywords" content="advent calendar creator, digital advent calendar, photo advent calendar, online advent calendar maker, Christmas countdown">
@@ -217,6 +224,16 @@ footer .wrap{align-items:center}footer .cocoa{min-height:44px;padding:0 16px;fon
     (function tick(t){const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);num.textContent=fmt(Math.round(to*e));if(p<1)requestAnimationFrame(tick);})(t0);
   }).catch(()=>{});
 })();
+</script>
+<script>
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a');if(!a)return;
+  const h=a.getAttribute('href')||'';
+  if(h.indexOf('/app/')===0){const loc=a.closest('nav')?'nav':a.closest('.final')?'final':'hero';track('cta_click',{location:loc});}
+  else if(h.indexOf('buy.stripe.com')>-1){track('donate_click',{location:'footer'});}
+  else if(h.indexOf('30products30days.com')>-1){track('outbound_click',{destination:'30products30days'});}
+});
+document.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)track('faq_open',{question:d.querySelector('summary').textContent.trim().slice(0,60)});}));
 </script>
 </body>
 </html>

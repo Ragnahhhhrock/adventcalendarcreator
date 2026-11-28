@@ -3,6 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Google tag (gtag.js) - served first-party via Cloudflare Google tag gateway when enabled -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K7Q02773H2"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','G-K7Q02773H2');
+function track(n,p){try{gtag('event',n,p||{});}catch(e){}}
+</script>
 <meta name="theme-color" id="themeColor" content="#0A0E1F">
 <meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -502,13 +509,13 @@ function renderGrid(){
 $('#grid').addEventListener('click',e=>{
   const b=e.target.closest('.door');if(!b)return;const d=+b.dataset.d;
   if(S.edit){if(S.days.has(d))openEditor(d);else{pickTarget=d;$('#slotPick').click();}return;}
-  if(!isUnlocked(d)){b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');buzz([18,40,18]);toast(`Door ${d} opens on ${d} ${MONTH}`);return;}
+  if(!isUnlocked(d)){b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');track('locked_door_tap',{day:d});buzz([18,40,18]);toast(`Door ${d} opens on ${d} ${MONTH}`);return;}
   openReveal(d);
 });
 $('#editToggle').addEventListener('click',()=>{S.edit=!S.edit;$('#editToggle').setAttribute('aria-pressed',S.edit);$('#editToggle .ic').textContent=S.edit?'✅':'✏️';$('#editToggle .tx').textContent=S.edit?'Done':'Decorate';renderGrid();if(S.edit)toast('Tap any door to add or decorate its photo');});
 
 /* anonymous "calendars created" counter: once per device, on first photo added */
-function countCalendar(){try{if(localStorage.getItem('acc-counted'))return;localStorage.setItem('acc-counted','1');fetch('/api/created',{method:'POST',keepalive:true}).catch(()=>{});}catch(e){}}
+function countCalendar(){try{if(localStorage.getItem('acc-counted'))return;localStorage.setItem('acc-counted','1');track('calendar_created',{theme:theme});fetch('/api/created',{method:'POST',keepalive:true}).catch(()=>{});}catch(e){}}
 /* ---------- adding photos ---------- */
 let pickTarget=0;
 function buzz(p){try{navigator.vibrate&&navigator.vibrate(p);}catch(e){}}
@@ -526,7 +533,7 @@ async function addFiles(files,only){
   }
   if(arr.length>targets.length&&!only)toast(`Added ${done}. Only ${targets.length} doors were empty.`);else toast(`Added ${done} photo${done===1?'':'s'} 🎁`);
   renderGrid();
-  if(done)countCalendar();
+  if(done){countCalendar();track('photos_added',{count:done,method:only?'single_door':'bulk',total_doors_filled:S.days.size});if(S.days.size===DAYS)track('calendar_full');}
   if(only&&done)openEditor(only);
 }
 $('#bulkPick').addEventListener('change',e=>{addFiles(e.target.files);e.target.value='';});
@@ -615,7 +622,7 @@ function buildPalettes(){
   mk($('#filterChips'),FILTERS,'filter');mk($('#frameChips'),FRAMES,'frame');
 }
 let autoN=0;
-$('#autoBtn').addEventListener('click',async()=>{if(!ed)return;const st=await autoDecorate(ed.photo,ed.day,autoN++);st.caption=ed.st.caption;ed.st=st;ed.sel=null;$('#snow').value=st.snow;$('#vig').checked=st.vignette;$('#zoom').value=100;syncChips();syncSel();sched();buzz(15);});
+$('#autoBtn').addEventListener('click',async()=>{if(!ed)return;const st=await autoDecorate(ed.photo,ed.day,autoN++);st.caption=ed.st.caption;track('auto_decorate',{day:ed.day});ed.st=st;ed.sel=null;$('#snow').value=st.snow;$('#vig').checked=st.vignette;$('#zoom').value=100;syncChips();syncSel();sched();buzz(15);});
 function pt(e){const r=edCv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};}
 function hit(p){
   const W=edCv.width,H=edCv.height;
@@ -668,7 +675,7 @@ $('#swapPick').addEventListener('change',async e=>{const f=e.target.files[0];e.t
 function closeEditor(){$('#editor').hidden=true;ed=null;}
 $('#edCancel').addEventListener('click',closeEditor);
 $('#edSave').addEventListener('click',async()=>{
-  if(!ed)return;const d=ed.day;ed.sel=null;await saveDay({day:d,blob:ed.blob,settings:ed.st});closeEditor();renderGrid();toast(`Day ${d} saved 🎄`);
+  if(!ed)return;const d=ed.day;ed.sel=null;await saveDay({day:d,blob:ed.blob,settings:ed.st});closeEditor();renderGrid();track('door_decorated',{day:d,stickers:S.days.get(d).settings.stickers.length});toast(`Day ${d} saved 🎄`);
 });
 let armT;function armRemove(on){const b=$('#edRemove');b.classList.toggle('armed',on);b.textContent=on?'Tap again to remove':'Remove photo';clearTimeout(armT);if(on)armT=setTimeout(()=>armRemove(false),3000);}
 $('#edRemove').addEventListener('click',async()=>{
@@ -698,10 +705,11 @@ async function openReveal(d){
   const un=x=>x>=1&&x<=DAYS&&isUnlocked(x);
   $('#rPrev').disabled=!un(d-1);$('#rNext').disabled=!un(d+1);
   const rec=S.days.get(d);startSnow(rec?rec.settings.snow:60);
-  if(!S.meta.opened.includes(d)){S.meta.opened.push(d);saveMeta();renderGrid();}
+  if(!S.meta.opened.includes(d)){S.meta.opened.push(d);saveMeta();renderGrid();track('door_opened',{day:d,has_photo:S.days.has(d)});}
 }
 function closeReveal(){stopSnow();$('#reveal').hidden=true;rDay=0;}
 $('#rClose').addEventListener('click',closeReveal);
+$('#rDl').addEventListener('click',()=>track('image_saved',{day:rDay}));
 $('#rPrev').addEventListener('click',()=>openReveal(rDay-1));
 $('#rNext').addEventListener('click',()=>openReveal(rDay+1));
 $('#reveal').addEventListener('click',e=>{if(e.target.id==='reveal')closeReveal();});
@@ -724,7 +732,7 @@ function buildThemes(){
   Object.entries(THEMES).forEach(([k,T])=>{
     const b=document.createElement('button');b.type='button';b.className='theme';b.dataset.t=k;b.setAttribute('role','radio');b.setAttribute('aria-checked','false');
     b.innerHTML='<span class="sw">'+T.sw.map(c=>`<i style="background:${c}"></i>`).join('')+'</span><span><b>'+T.name+'</b><small>'+T.tag+'</small></span><span class="ck" aria-hidden="true"></span>';
-    b.addEventListener('click',()=>applyTheme(k,true));l.append(b);
+    b.addEventListener('click',()=>{applyTheme(k,true);track('theme_changed',{theme:k});});l.append(b);
   });
 }
 /* ---------- settings ---------- */
@@ -740,10 +748,10 @@ $('#settingsBtn').addEventListener('click',openSettings);
 $('#setClose').addEventListener('click',()=>{$('#settings').hidden=true;});
 $('#setTitle').addEventListener('input',e=>{S.meta.title=e.target.value||'Our Advent Calendar';saveMeta();renderGrid();});
 $('#setYear').addEventListener('change',e=>{S.meta.year=+e.target.value;saveMeta();renderGrid();});
-$('#setPreview').addEventListener('change',e=>{S.meta.previewDay=+e.target.value;saveMeta();renderGrid();});
+$('#setPreview').addEventListener('change',e=>{S.meta.previewDay=+e.target.value;track('preview_date_set',{day:S.meta.previewDay});saveMeta();renderGrid();});
 let resetT;$('#setReset').addEventListener('click',async e=>{
   const b=e.currentTarget;if(!b.classList.contains('armed')){b.classList.add('armed');b.textContent='Tap again to erase everything';clearTimeout(resetT);resetT=setTimeout(()=>{b.classList.remove('armed');b.textContent='Reset calendar';},3000);return;}
-  for(let d=1;d<=DAYS;d++)if(S.days.has(d))await delDay(d);S.meta.opened=[];await saveMeta();b.classList.remove('armed');b.textContent='Reset calendar';$('#settings').hidden=true;renderGrid();toast('Calendar reset');
+  for(let d=1;d<=DAYS;d++)if(S.days.has(d))await delDay(d);S.meta.opened=[];track('calendar_reset');await saveMeta();b.classList.remove('armed');b.textContent='Reset calendar';$('#settings').hidden=true;renderGrid();toast('Calendar reset');
 });
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('#reveal').hidden)closeReveal();else if(!$('#editor').hidden)closeEditor();else if(!$('#settings').hidden)$('#settings').hidden=true;});
 
@@ -766,6 +774,7 @@ new MutationObserver(syncLock).observe(document.body,{subtree:true,attributes:tr
   buildPalettes();buildSettings();buildThemes();
   await load();noteStore();applyTheme(S.meta.theme||(THEMES[new URLSearchParams(location.search).get('theme')]?new URLSearchParams(location.search).get('theme'):'midnight'),false);
   if(document.fonts)document.fonts.load('700 36px "Mountains of Christmas"').catch(()=>{});
+  track('app_loaded',{doors_filled:S.days.size,theme:theme});
   if(!S.days.size)toast('Tap “Add photos” to start your calendar');
 })();
 })();
