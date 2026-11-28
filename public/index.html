@@ -108,7 +108,13 @@ details p{margin:0 0 16px;color:var(--muted);font-weight:500}
 .final h2{margin-bottom:22px}
 footer{border-top:var(--bd);background:#fff;padding:22px 0 30px;font-weight:700;font-size:14px}
 footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between}
-footer .wrap{align-items:center}footer .cocoa{min-height:44px;padding:0 16px;font-size:15px;background:var(--yellow)}
+footer .wrap{align-items:center}footer .cocoa{min-height:52px;padding:0 22px;font-size:17px;background:var(--yellow)}
+.cocoa b{background:var(--ink);color:var(--yellow);border-radius:999px;padding:5px 10px;font-size:.85em;line-height:1}
+.support{background:var(--mint);border-block:var(--bd);text-align:center;padding:44px 0}
+.support h2{margin:0 0 14px}.support p{margin:0 auto 22px;max-width:520px;font-weight:700}
+.support .cocoa{min-height:68px;padding:0 34px;font-size:22px;background:var(--yellow);animation:cocoa-wiggle 3s ease-in-out infinite}
+@keyframes cocoa-wiggle{0%,86%,100%{rotate:0deg}90%{rotate:-3deg}94%{rotate:3deg}}
+@media (prefers-reduced-motion:reduce){.support .cocoa{animation:none}}
 .count{display:none;align-items:center;gap:14px;margin-top:26px;padding:14px 20px;background:var(--yellow);border:var(--bd);border-radius:18px;box-shadow:var(--sh);rotate:-1.5deg;width:fit-content;max-width:100%}
 .count.on{display:flex;animation:pop .6s cubic-bezier(.2,1.6,.4,1) both}
 .count b{font-size:clamp(40px,11vw,60px);line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums;font-weight:800}
@@ -198,7 +204,9 @@ footer .wrap{align-items:center}footer .cocoa{min-height:44px;padding:0 16px;fon
 </section>
 </main>
 
-<footer><div class="wrap"><span>🎄 Advent Calendar Creator</span><span>Product 1 of #30products30days</span><a href="https://30products30days.com">30products30days.com</a><a class="btn alt cocoa" href="https://buy.stripe.com/3cI4gr1PPfcx4gU0UcaAw0c" target="_blank" rel="noopener">☕ Buy me a hot cocoa</a></div></footer>
+<section class="support" id="support"><div class="wrap"><h2>Enjoying it? Fuel the <span>next</span> door.</h2><p>It's free to use. If it made your December a bit brighter, a hot cocoa keeps me building.</p><a class="btn cocoa" data-loc="support" href="https://buy.stripe.com/3cI4gr1PPfcx4gU0UcaAw0c" target="_blank" rel="noopener">☕ Buy me a hot cocoa <b>$5</b></a></div></section>
+
+<footer><div class="wrap"><span>🎄 Advent Calendar Creator</span><span>Product 1 of #30products30days</span><a href="https://30products30days.com">30products30days.com</a><a class="btn alt cocoa" href="https://buy.stripe.com/3cI4gr1PPfcx4gU0UcaAw0c" target="_blank" rel="noopener">☕ Buy me a hot cocoa <b>$5</b></a></div></footer>
 
 <script>
 (()=>{
@@ -230,7 +238,7 @@ document.addEventListener('click',e=>{
   const a=e.target.closest('a');if(!a)return;
   const h=a.getAttribute('href')||'';
   if(h.indexOf('/app/')===0){const loc=a.closest('nav')?'nav':a.closest('.final')?'final':'hero';track('cta_click',{location:loc});}
-  else if(h.indexOf('buy.stripe.com')>-1){track('donate_click',{location:'footer'});}
+  else if(h.indexOf('buy.stripe.com')>-1){track('donate_click',{location:a.closest('.support')?'support_band':'footer'});}
   else if(h.indexOf('30products30days.com')>-1){track('outbound_click',{destination:'30products30days'});}
 });
 document.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)track('faq_open',{question:d.querySelector('summary').textContent.trim().slice(0,60)});}));
