@@ -62,7 +62,7 @@ h1{font-family:var(--fd);font-weight:var(--fdw);font-size:clamp(30px,10vw,var(--
 .empty .cta .btn{flex:1;justify-content:center;min-height:50px;font-size:16px}
 .empty .cta .btn.main{background:var(--accent);border:var(--pb);color:var(--accent-fg)}
 .btn{background:var(--soft);border:var(--btnb);border-radius:var(--btnr);box-shadow:var(--btns);padding:10px 14px;font-weight:700;display:inline-flex;align-items:center;gap:6px;color:var(--ink)}
-.dock{position:fixed;z-index:10;left:50%;transform:translateX(-50%);bottom:calc(12px + var(--sb));width:min(560px,calc(100% - 24px));display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px 8px;background:var(--dockbg);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:var(--dockb);border-radius:var(--dockr);box-shadow:var(--docks);box-sizing:border-box}
+.dock{position:fixed;z-index:10;left:50%;transform:translateX(-50%);bottom:calc(12px + var(--sb));width:min(560px,calc(100% - 24px));display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:6px 8px;background:var(--dockbg);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:var(--dockb);border-radius:var(--dockr);box-shadow:var(--docks);box-sizing:border-box}
 .dock .d{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:58px;border-radius:14px;border:0;background:transparent;font-weight:700;font-size:11px;color:var(--ink);font-family:var(--fb)}
 .dock .d .ic{font-size:21px;line-height:1;width:38px;height:38px;display:grid;place-items:center}
 .dock .d:active{background:var(--soft)}
@@ -200,6 +200,7 @@ html.lock .toast{bottom:auto;top:calc(var(--st) + 66px)}
   <label class="d main" for="bulkPick"><span class="ic">＋</span><span>Add photos</span></label>
   <label class="d" for="camPick"><span class="ic">📷</span><span>Camera</span></label>
   <button class="d" id="editToggle" aria-pressed="false"><span class="ic">✏️</span><span class="tx">Decorate</span></button>
+  <button class="d" id="printBtn"><span class="ic">🖨️</span><span>Print</span></button>
   <button class="d" id="settingsBtn"><span class="ic">⚙️</span><span>Settings</span></button>
 </nav>
 
@@ -272,6 +273,18 @@ html.lock .toast{bottom:auto;top:calc(var(--st) + 66px)}
       <p class="hint">Preview date pretends it is that day in December, so you can test unlocking. Set it back to "Real date" before gifting.</p>
       <div class="row"><button id="setReset" class="small danger">Reset calendar</button></div>
       <p class="hint" id="setStore"></p>
+    </div>
+  </div>
+</div>
+<div id="print" class="modal" hidden role="dialog" aria-modal="true" aria-label="Print at home">
+  <div class="sheet">
+    <div class="bar"><span style="width:60px"></span><strong>Print at home</strong><button id="prClose" class="primary">Close</button></div>
+    <div class="panels" style="flex:none">
+      <p style="margin:0">Make a paper advent calendar you print, cut and fold yourself: 24 doors on the front sheet, your decorated photos on the sheet behind.</p>
+      <label style="display:block">Paper size<select id="prPaper" style="margin-top:6px"><option value="a4">A4</option><option value="letter">US Letter</option></select></label>
+      <div class="row"><button id="prGo" class="primary" style="width:100%">⬇ Download printable PDF</button></div>
+      <p class="hint" id="prMsg">Free. Your photos stay on this device. Any doors without a photo get a Merry Christmas tile.</p>
+      <div class="row"><a id="prCocoa" class="btn" hidden target="_blank" rel="noopener" href="https://buy.stripe.com/3cI4gr1PPfcx4gU0UcaAw0c">☕ Enjoyed it? Buy me a hot cocoa</a></div>
     </div>
   </div>
 </div>
@@ -734,6 +747,31 @@ function openSettings(){
   $('#setTitle').value=S.meta.title;$('#setYear').value=S.meta.year;$('#setPreview').value=S.meta.previewDay;$('#settings').hidden=false;
 }
 $('#settingsBtn').addEventListener('click',openSettings);
+/* ---------- print at home (papercraft PDF) ---------- */
+$('#prPaper').value=/^en-(US|CA)/i.test(navigator.language||'')?'letter':'a4';
+$('#printBtn').addEventListener('click',()=>{$('#print').hidden=false;});
+$('#prClose').addEventListener('click',()=>{$('#print').hidden=true;});
+$('#prGo').addEventListener('click',async()=>{
+  const b=$('#prGo'),msg=$('#prMsg');
+  if(!S.days.size){msg.textContent='Add at least one photo first.';return;}
+  b.disabled=true;msg.textContent='Making your PDF…';
+  try{
+    const photos=[];
+    for(let d=1;d<=DAYS;d++){
+      if(S.days.has(d)){const blob=await toBlobP(await cardFor(d,600),.85);photos.push(new Uint8Array(await blob.arrayBuffer()));}
+      else photos.push(null);
+    }
+    const {buildCalendarPdf}=await import('../papercraft/papercraft.js');
+    const pdf=await buildCalendarPdf({photos,title:S.meta.title,theme,paper:$('#prPaper').value,fit:'contain'});
+    const url=URL.createObjectURL(new Blob([pdf],{type:'application/pdf'}));
+    const a=document.createElement('a');a.href=url;a.download=((S.meta.title||'advent-calendar').replace(/[^\w-]+/g,'-').replace(/^-+|-+$/g,'')||'advent-calendar')+'-printable.pdf';
+    document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
+    msg.textContent='Done! Print pages 1 and 2 at 100% (actual size), then follow page 3.';
+    $('#prCocoa').hidden=false;
+  }catch(e){msg.textContent='Sorry, the PDF could not be made. Please try again.';}
+  b.disabled=false;
+});
+
 $('#setClose').addEventListener('click',()=>{$('#settings').hidden=true;});
 $('#setTitle').addEventListener('input',e=>{S.meta.title=e.target.value||'Our Advent Calendar';saveMeta();renderGrid();});
 $('#setYear').addEventListener('change',e=>{S.meta.year=+e.target.value;saveMeta();renderGrid();});

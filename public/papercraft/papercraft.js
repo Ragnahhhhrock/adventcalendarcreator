@@ -78,7 +78,7 @@ function marks(page, g, color) {
 
 export async function buildCalendarPdf({
   photos = [], title = "Merry Christmas", subtitle = "", theme = "hearth",
-  paper = "a4", shuffle = true, seed = 2026, fillMessage = "Merry Christmas",
+  paper = "a4", shuffle = true, seed = 2026, fillMessage = "Merry Christmas", fit = "contain",
 } = {}) {
   const T = THEMES[theme] || THEMES.hearth;
   const g = geometry(paper);
@@ -135,7 +135,8 @@ export async function buildCalendarPdf({
     const c = cellRect(g, i), day = order[i], img = imgs[day];
     back.pushOperators(pushGraphicsState(), rectangle(c.x, c.y, c.w, c.h), clip(), endPath());
     if (img) {
-      const s = Math.max(c.w / img.width, c.h / img.height); // cover
+      if (fit === "contain") back.drawRectangle({ x: c.x, y: c.y, width: c.w, height: c.h, color: hex(T.bg) });
+      const s = (fit === "contain" ? Math.min : Math.max)(c.w / img.width, c.h / img.height); // contain keeps captions/stickers visible
       const w = img.width * s, h = img.height * s;
       back.drawImage(img, { x: c.x + (c.w - w) / 2, y: c.y + (c.h - h) / 2, width: w, height: h });
     } else {
@@ -145,7 +146,7 @@ export async function buildCalendarPdf({
     }
     back.pushOperators(popGraphicsState());
     // day label in the cell corner, outside the visible door window
-    back.drawText(`Day ${day}`, { x: c.x + 1 * MM, y: c.y + 0.9 * MM, size: 5.5, font: reg, color: rgb(1, 1, 1), opacity: 0.9 });
+    back.drawText(`Day ${day}`, { x: c.x + 1 * MM, y: c.y + 0.9 * MM, size: 5.5, font: reg, color: fit === "contain" ? ink : rgb(1, 1, 1), opacity: 0.8 });
   }
   back.drawText("PHOTO SHEET - glue behind the front sheet, lining up the corner marks", { x: g.margin * MM, y: (g.margin + 5) * MM, size: 8, font: bold, color: rgb(0.2, 0.2, 0.2) });
   marks(back, g, rgb(0, 0, 0));
