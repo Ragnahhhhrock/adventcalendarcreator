@@ -120,6 +120,7 @@ footer .wrap{align-items:center}footer .cocoa{min-height:52px;padding:0 22px;fon
 .count b{font-size:clamp(40px,11vw,60px);line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums;font-weight:800}
 .count span{font-weight:800;font-size:15px;text-transform:uppercase;line-height:1.15;letter-spacing:.2px}
 @keyframes pop{from{transform:scale(.6) translateY(14px);opacity:0}to{transform:none;opacity:1}}
+.vid{padding-top:10px;padding-bottom:50px}.vid h2{text-align:center}.vidbox{max-width:880px;margin:0 auto;border:var(--bd);border-radius:22px;box-shadow:7px 7px 0 var(--ink);overflow:hidden;background:var(--ink);rotate:-.6deg}.vidbox video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:var(--ink)}
 .snow{position:fixed;inset:0;pointer-events:none;z-index:5}
 @media(min-width:760px){
   .hero{grid-template-columns:1.1fr .9fr;align-items:center;gap:48px;padding:56px 0 80px}
@@ -159,6 +160,11 @@ footer .wrap{align-items:center}footer .cocoa{min-height:52px;padding:0 22px;fon
     <div class="bar"><span>🎄 Our Advent Calendar</span><span>Day 7 is open!</span></div>
   </div>
 </div>
+
+<section class="wrap vid" id="video">
+  <h2>See it in <span>16 seconds</span></h2>
+  <div class="vidbox"><video id="promo" controls playsinline preload="metadata" poster="/video/promo-poster.jpg" aria-label="Short video showing how Advent Calendar Creator works: add your photos, we decorate them, open a door a day"><source src="/video/promo.mp4" type="video/mp4"></video></div>
+</section>
 
 <div class="band"><section class="wrap" id="how">
   <h2>How it <span>works</span></h2>
@@ -240,6 +246,7 @@ document.addEventListener('click',e=>{
   else if(h.indexOf('buy.stripe.com')>-1){track('donate_click',{location:a.closest('.support')?'support_band':'footer'});}
   else if(h.indexOf('30products30days.com')>-1){track('outbound_click',{destination:'30products30days'});}
 });
+document.getElementById('promo').addEventListener('play',function(){track('video_play',{video:'promo'});},{once:true});
 document.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)track('faq_open',{question:d.querySelector('summary').textContent.trim().slice(0,60)});}));
 </script>
 </body>
