@@ -102,13 +102,18 @@ details p{margin:0 0 16px;color:var(--muted);font-weight:500}
 footer{border-top:var(--bd);background:#fff;padding:22px 0 30px;font-weight:700;font-size:14px}
 footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between}
 footer .wrap{align-items:center}footer .cocoa{min-height:44px;padding:0 16px;font-size:15px;background:var(--yellow)}
+.count{display:none;align-items:center;gap:14px;margin-top:26px;padding:14px 20px;background:var(--yellow);border:var(--bd);border-radius:18px;box-shadow:var(--sh);rotate:-1.5deg;width:fit-content;max-width:100%}
+.count.on{display:flex;animation:pop .6s cubic-bezier(.2,1.6,.4,1) both}
+.count b{font-size:clamp(40px,11vw,60px);line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums;font-weight:800}
+.count span{font-weight:800;font-size:15px;text-transform:uppercase;line-height:1.15;letter-spacing:.2px}
+@keyframes pop{from{transform:scale(.6) translateY(14px);opacity:0}to{transform:none;opacity:1}}
 .snow{position:fixed;inset:0;pointer-events:none;z-index:5}
 @media(min-width:760px){
   .hero{grid-template-columns:1.1fr .9fr;align-items:center;gap:48px;padding:56px 0 80px}
   .steps,.feats{grid-template-columns:repeat(3,1fr)}.feats{grid-template-columns:repeat(2,1fr)}
   .looks{grid-template-columns:repeat(3,1fr)}
 }
-@media(prefers-reduced-motion:reduce){.tape div{animation:none}html{scroll-behavior:auto}}
+@media(prefers-reduced-motion:reduce){.tape div{animation:none}.count.on{animation:none}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
@@ -129,6 +134,7 @@ footer .wrap{align-items:center}footer .cocoa{min-height:44px;padding:0 16px;fon
     <p class="lede">Drop in your favourite photos and we'll dress them up in snow, stickers and Christmas filters. Then open one door every day until Christmas.</p>
     <div class="cta"><a class="btn" href="/app/?theme=pop">Make my calendar →</a><a class="btn alt" href="#how">How it works</a></div>
     <p class="fine">Free · No sign-up · Works on your phone</p>
+    <div class="count" id="count" aria-live="polite"><b id="countNum">0</b><span>calendars<br>created so far 🎄</span></div>
   </div>
   <div class="board" role="img" aria-label="A preview advent calendar with some doors open showing photos">
     <div class="grid">
@@ -197,6 +203,19 @@ footer .wrap{align-items:center}footer .cocoa{min-height:44px;padding:0 16px;fon
   (function t(){x.clearRect(0,0,W,H);x.fillStyle='rgba(255,75,62,.55)';
     for(const s of f){s.y+=s.v;s.p+=.012;s.x+=Math.sin(s.p)*.5;if(s.y>H+5){s.y=-5;s.x=Math.random()*W;}x.beginPath();x.arc(s.x,s.y,s.r,0,7);x.fill();}
     requestAnimationFrame(t);})();
+})();
+</script>
+<script>
+(()=>{
+  const box=document.getElementById('count'),num=document.getElementById('countNum');
+  fetch('/api/count',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{
+    if(!d||!d.show)return;
+    const to=d.count,fmt=n=>n.toLocaleString('en-AU');
+    box.classList.add('on');
+    if(matchMedia('(prefers-reduced-motion:reduce)').matches){num.textContent=fmt(to);return;}
+    const dur=1600,t0=performance.now();
+    (function tick(t){const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);num.textContent=fmt(Math.round(to*e));if(p<1)requestAnimationFrame(tick);})(t0);
+  }).catch(()=>{});
 })();
 </script>
 </body>

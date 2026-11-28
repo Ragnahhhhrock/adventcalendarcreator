@@ -507,6 +507,8 @@ $('#grid').addEventListener('click',e=>{
 });
 $('#editToggle').addEventListener('click',()=>{S.edit=!S.edit;$('#editToggle').setAttribute('aria-pressed',S.edit);$('#editToggle .ic').textContent=S.edit?'✅':'✏️';$('#editToggle .tx').textContent=S.edit?'Done':'Decorate';renderGrid();if(S.edit)toast('Tap any door to add or decorate its photo');});
 
+/* anonymous "calendars created" counter: once per device, on first photo added */
+function countCalendar(){try{if(localStorage.getItem('acc-counted'))return;localStorage.setItem('acc-counted','1');fetch('/api/created',{method:'POST',keepalive:true}).catch(()=>{});}catch(e){}}
 /* ---------- adding photos ---------- */
 let pickTarget=0;
 function buzz(p){try{navigator.vibrate&&navigator.vibrate(p);}catch(e){}}
@@ -524,6 +526,7 @@ async function addFiles(files,only){
   }
   if(arr.length>targets.length&&!only)toast(`Added ${done}. Only ${targets.length} doors were empty.`);else toast(`Added ${done} photo${done===1?'':'s'} 🎁`);
   renderGrid();
+  if(done)countCalendar();
   if(only&&done)openEditor(only);
 }
 $('#bulkPick').addEventListener('change',e=>{addFiles(e.target.files);e.target.value='';});
